@@ -5,17 +5,11 @@ use dioxus_desktop::{
     Config, WindowBuilder,
 };
 
-fn global_styles() -> &'static str {
-    r"
-        <style>
-            * {
-                box-sizing:border-box;
-            }
-            body {
-                margin:0;
-            }
-        </style>"
-}
+use crate::ui::components::flexbox::Flexbox;
+use crate::ui::components::label::Label;
+use crate::ui::global_styles::*;
+
+pub mod ui;
 
 fn main() {
     dioxus_desktop::launch_cfg(
@@ -24,8 +18,10 @@ fn main() {
             .with_window(
                 WindowBuilder::new()
                     .with_inner_size(LogicalSize::new(360, 360))
+                    .with_always_on_top(true)
+                    .with_title("Timer 255 - Dioxus.rs")
                     // INFO: position only for development
-                    .with_position(PhysicalPosition::new(3470, 680)),
+                    .with_position(PhysicalPosition::new(3470, 630)),
             )
             .with_custom_head(global_styles().to_string()),
     );
@@ -44,7 +40,26 @@ fn App(cx: Scope) -> Element {
     cx.render(rsx! {
         div {
             style: app_style,
-            "Hello, world!"
-        }
+            Flexbox {
+                    Flexbox {
+                        direction: "column",
+                        Label {
+                            text: "Break Length"
+                        },
+                        Label {
+                            text: "5"
+                        },
+              },
+                Flexbox {
+                    direction: "column",
+                        Label {
+                            text: "Session Length"
+                        },
+                        Label {
+                            text: "25"
+                        },
+                }
+        },
+    }
     })
 }
