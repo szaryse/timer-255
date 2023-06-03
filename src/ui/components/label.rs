@@ -3,19 +3,18 @@ use dioxus::prelude::*;
 
 #[derive(Props)]
 pub struct LabelProps<'a> {
+    #[props(default = "18px")]
+    font_size: &'a str,
     text: &'a str,
 }
 
 pub fn Label<'a>(cx: Scope<'a, LabelProps<'a>>) -> Element {
-    let label_style = r"
-        font-size: 18px;
-        font-family: 'Consolas', sans-serif;
-        text-align: center;
-    ";
-
     cx.render(rsx! {
         div {
-            style: label_style,
+            font_family: "'Consolas', sans-serif",
+            text_align: "center",
+            font_size: cx.props.font_size,
+            margin: "0 4px",
             "{cx.props.text}"
         }
     })

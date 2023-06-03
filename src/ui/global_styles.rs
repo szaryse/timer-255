@@ -6,6 +6,7 @@ pub fn global_styles() -> &'static str {
             }
             body {
                 margin:0;
+                font-family: 'Consolas', sans-serif;
             }
         </style>"
 }
