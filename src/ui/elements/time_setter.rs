@@ -4,7 +4,7 @@ use crate::ui::components::flexbox::Flexbox;
 use crate::ui::components::label::Label;
 use crate::ui::components::wrapper::Wrapper;
 
-use crate::ActivityTime;
+use crate::contexts::state::ActivityTime;
 
 use dioxus::prelude::*;
 

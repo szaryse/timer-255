@@ -12,6 +12,7 @@ pub fn Wrapper<'a>(cx: Scope<'a, WrapperProps<'a>>) -> Element {
     cx.render(rsx! {
         div {
             width: cx.props.width,
+            flex_shrink: 0,
             &cx.props.children
         }
     })

@@ -1,17 +1,18 @@
 #![allow(non_snake_case)]
+use contexts::state::{create_initial_times, IsCounting};
 use dioxus::prelude::*;
 use dioxus_desktop::{
     tao::dpi::{LogicalSize, PhysicalPosition},
     Config, WindowBuilder,
 };
 
-use crate::ui::components::button::Button;
-use crate::ui::components::flexbox::Flexbox;
 use crate::ui::components::label::Label;
-use crate::ui::components::wrapper::Wrapper;
+use crate::ui::elements::time_label::TimeLabel;
 use crate::ui::elements::time_setter::TimeSetter;
 use crate::ui::global_styles::*;
+use crate::ui::{components::flexbox::Flexbox, elements::controls::Controls};
 
+pub mod contexts;
 pub mod ui;
 
 fn main() {
@@ -30,25 +31,6 @@ fn main() {
     );
 }
 
-#[derive(Clone)]
-pub struct ActivityTime {
-    // default_time: u32,
-    set_time: u32,
-}
-
-impl ActivityTime {
-    fn decrease(&mut self) {
-        if (1..=60).contains(&self.set_time) {
-            self.set_time -= 1;
-        }
-    }
-    fn increase(&mut self) {
-        if (0..=59).contains(&self.set_time) {
-            self.set_time += 1;
-        }
-    }
-}
-
 fn App(cx: Scope) -> Element {
     let app_style = r"
         width: 100vw;
@@ -56,29 +38,22 @@ fn App(cx: Scope) -> Element {
         background-color: #181818;
         color: #c0c0c0;
     ";
+    let initial_times = create_initial_times();
 
-    let break_time = ActivityTime {
-        // default_time: 5,
-        set_time: 5,
-    };
-    let session_time = ActivityTime {
-        // default_time: 25,
-        set_time: 25,
-    };
-
-    use_shared_state_provider(cx, || vec![break_time, session_time]);
+    use_shared_state_provider(cx, || initial_times);
+    use_shared_state_provider(cx, || IsCounting(false));
 
     cx.render(rsx! {
         div {
             style: app_style,
             Flexbox {
                 padding: "16px",
-                Flexbox {
-                    "Buttons"
-                }
-                Flexbox {
-                    "Timer Label"
-                }
+                Controls {
+                    idx: 1,
+                },
+                TimeLabel {
+                    idx: 1
+                },
                 Flexbox {
                     Flexbox {
                         direction: "column",

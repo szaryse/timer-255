@@ -21,6 +21,7 @@ pub fn Flexbox<'a>(cx: Scope<'a, FlexboxProps<'a>>) -> Element {
             align_items: "center",
             flex_grow: 1,
             width: "100%",
+            height: "100%",
             padding: cx.props.padding,
             &cx.props.children
         }
