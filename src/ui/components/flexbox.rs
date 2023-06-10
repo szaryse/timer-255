@@ -4,10 +4,12 @@ use dioxus::prelude::*;
 #[derive(Props)]
 pub struct FlexboxProps<'a> {
     #[props(default = "row")]
-    direction: Option<&'a str>,
-    children: Element<'a>,
+    direction: &'a str,
     #[props(default = "center")]
-    justify_content: Option<&'a str>,
+    justify_content: &'a str,
+    #[props(default = "0")]
+    padding: &'a str,
+    children: Element<'a>,
 }
 
 pub fn Flexbox<'a>(cx: Scope<'a, FlexboxProps<'a>>) -> Element {
@@ -18,7 +20,8 @@ pub fn Flexbox<'a>(cx: Scope<'a, FlexboxProps<'a>>) -> Element {
             justify_content: cx.props.justify_content,
             align_items: "center",
             flex_grow: 1,
-            padding: "8px",
+            width: "100%",
+            padding: cx.props.padding,
             &cx.props.children
         }
     })

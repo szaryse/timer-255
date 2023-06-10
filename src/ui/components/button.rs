@@ -14,9 +14,9 @@ pub fn Button<'a>(cx: Scope<'a, ButtonProps<'a>>) -> Element<'a> {
         font_family: "'Consolas', sans-serif",
         font_size: "16px",
         font_weight: "bold",
-        background: "transparent",
-        color: "#00FF00",
-        border: "2px solid #008000",
+        background: "#303030",
+        color: "#008000",
+        border: 0,
         border_radius: "8px",
         onclick: move |evt| cx.props.on_click.call(evt),
         "{cx.props.text}"
