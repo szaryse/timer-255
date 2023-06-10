@@ -48,6 +48,7 @@ fn App(cx: Scope) -> Element {
             style: app_style,
             Flexbox {
                 padding: "16px",
+                height: "100%",
                 Controls {
                     idx: 1,
                 },

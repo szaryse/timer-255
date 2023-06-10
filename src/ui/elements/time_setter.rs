@@ -5,6 +5,8 @@ use crate::ui::components::label::Label;
 use crate::ui::components::wrapper::Wrapper;
 
 use crate::contexts::state::ActivityTime;
+use crate::ui::icons::minus_icon::MinusIcon;
+use crate::ui::icons::plus_icon::PlusIcon;
 
 use dioxus::prelude::*;
 
@@ -23,7 +25,7 @@ pub fn TimeSetter(cx: Scope<TimeSetterProps>) -> Element {
                 on_click: move |_event| {
                     times.write()[cx.props.idx].decrease();
                 },
-                text: "-"
+                MinusIcon {}
             },
             Wrapper {
                 width: "40px",
@@ -36,7 +38,7 @@ pub fn TimeSetter(cx: Scope<TimeSetterProps>) -> Element {
                 on_click: move |_event| {
                     times.write()[cx.props.idx].increase();
                 },
-                text: "+"
+                PlusIcon {}
             }
         }
     })

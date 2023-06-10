@@ -2,8 +2,12 @@
 use crate::ui::components::button::Button;
 use crate::ui::components::flexbox::Flexbox;
 use crate::ui::components::wrapper::Wrapper;
+use crate::ui::icons::next_icon::NextIcon;
+use crate::ui::icons::pause_icon::PauseIcon;
+use crate::ui::icons::play_icon::PlayIcon;
 
 use crate::contexts::state::IsCounting;
+use crate::ui::icons::reset_icon::ResetIcon;
 
 use dioxus::prelude::*;
 
@@ -28,19 +32,25 @@ pub fn Controls(cx: Scope<ControlsProps>) -> Element {
                             is_counting.write().0 = !counting_state;
                         }
                     },
-                    text: "Play/Pause"
+                    PlayIcon {},
                 },
                 Button {
                     on_click: move |_event| {
                         is_counting.write().0 = false;
                     },
-                    text: "Reset"
+                    PauseIcon {}
                 },
                 Button {
                     on_click: move |_event| {
                        //
                     },
-                    text: "Next"
+                    ResetIcon {},
+                },
+                Button {
+                    on_click: move |_event| {
+                       //
+                    },
+                    NextIcon {},
                 },
             }
         }
