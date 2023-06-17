@@ -1,10 +1,11 @@
 #![allow(non_snake_case)]
-use contexts::state::{create_initial_times, IsCounting};
+use contexts::state::{create_initial_times, ActivityTime, Timer};
 use dioxus::prelude::*;
 use dioxus_desktop::{
     tao::dpi::{LogicalSize, PhysicalPosition},
     Config, WindowBuilder,
 };
+use std::time::Duration;
 
 use crate::ui::components::label::Label;
 use crate::ui::elements::time_label::TimeLabel;
@@ -38,10 +39,33 @@ fn App(cx: Scope) -> Element {
         background-color: #181818;
         color: #c0c0c0;
     ";
-    let initial_times = create_initial_times();
 
-    use_shared_state_provider(cx, || initial_times);
-    use_shared_state_provider(cx, || IsCounting(false));
+    use_shared_state_provider(cx, || create_initial_times());
+    use_shared_state_provider(cx, || Timer {
+        is_counting: false,
+        idx: 1,
+    });
+
+    let timer_config = use_shared_state::<Timer>(cx).unwrap();
+    let times = use_shared_state::<Vec<ActivityTime>>(cx).unwrap();
+
+    let idx = timer_config.read().idx;
+    let count = use_state(cx, || times.read()[idx].set_time * 60);
+    let is_counting = timer_config.read().is_counting;
+
+    use_future(cx, &is_counting, move |_| {
+        let mut count = count.clone();
+        async move {
+            loop {
+                tokio::time::sleep(Duration::from_millis(1000)).await;
+                if is_counting {
+                    count -= 1;
+                }
+            }
+        }
+    });
+
+    let current_text = times.read()[idx].activity_name.clone();
 
     cx.render(rsx! {
         div {
@@ -51,9 +75,11 @@ fn App(cx: Scope) -> Element {
                 height: "100%",
                 Controls {
                     idx: 1,
+                    count: count
                 },
                 TimeLabel {
-                    idx: 1
+                    text: current_text,
+                    count: **count,
                 },
                 Flexbox {
                     Flexbox {

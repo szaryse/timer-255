@@ -6,20 +6,22 @@ use crate::ui::icons::next_icon::NextIcon;
 use crate::ui::icons::pause_icon::PauseIcon;
 use crate::ui::icons::play_icon::PlayIcon;
 
-use crate::contexts::state::IsCounting;
+use crate::contexts::state::{ActivityTime, Timer};
 use crate::ui::icons::reset_icon::ResetIcon;
 
 use dioxus::prelude::*;
 
 #[derive(PartialEq, Props)]
-pub struct ControlsProps {
-    idx: usize, // TODO: verify usage
+pub struct ControlsProps<'a> {
+    idx: usize,
+    count: &'a UseState<u32>,
 }
 
-pub fn Controls(cx: Scope<ControlsProps>) -> Element {
-    let is_counting = use_shared_state::<IsCounting>(cx).unwrap();
+pub fn Controls<'a>(cx: Scope<'a, ControlsProps<'a>>) -> Element {
+    let timer_config = use_shared_state::<Timer>(cx).unwrap();
+    let times = use_shared_state::<Vec<ActivityTime>>(cx).unwrap();
 
-    let counting_state = is_counting.read().0;
+    let is_counting = timer_config.read().is_counting;
 
     cx.render(rsx! {
         Wrapper {
@@ -28,21 +30,22 @@ pub fn Controls(cx: Scope<ControlsProps>) -> Element {
                 justify_content: "space-evenly",
                 Button {
                     on_click: move |_event| {
-                        if !counting_state {
-                            is_counting.write().0 = !counting_state;
+                        if !is_counting {
+                            timer_config.write().is_counting = true;
                         }
                     },
                     PlayIcon {},
                 },
                 Button {
                     on_click: move |_event| {
-                        is_counting.write().0 = false;
+                        timer_config.write().is_counting = false;
                     },
                     PauseIcon {}
                 },
                 Button {
                     on_click: move |_event| {
-                       //
+                        timer_config.write().is_counting = false;
+                        *cx.props.count.make_mut() = times.read()[cx.props.idx].set_time * 60;
                     },
                     ResetIcon {},
                 },

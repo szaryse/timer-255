@@ -21,16 +21,18 @@ impl ActivityTime {
 pub fn create_initial_times() -> Vec<ActivityTime> {
     let break_time = ActivityTime {
         activity_name: "Break".to_string(),
-        // default_time: 5,
         set_time: 5,
     };
     let session_time = ActivityTime {
         activity_name: "Session".to_string(),
-        // default_time: 25,
         set_time: 25,
     };
 
     vec![break_time, session_time]
 }
 
-pub struct IsCounting(pub bool);
+#[derive(PartialEq, Clone)]
+pub struct Timer {
+    pub is_counting: bool,
+    pub idx: usize,
+}
