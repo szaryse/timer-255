@@ -32,6 +32,11 @@ pub fn Controls<'a>(cx: Scope<'a, ControlsProps<'a>>) -> Element {
                     on_click: move |_event| {
                         if !is_counting {
                             timer_config.write().is_counting = true;
+                            timer_config.write().show_set_time = false;
+                            if !timer_config.read().is_pausing {
+                                *cx.props.count.make_mut() = times.read()[cx.props.idx].set_time * 60;
+                            }
+                            timer_config.write().is_pausing = false;
                         }
                     },
                     PlayIcon {},
@@ -39,19 +44,22 @@ pub fn Controls<'a>(cx: Scope<'a, ControlsProps<'a>>) -> Element {
                 Button {
                     on_click: move |_event| {
                         timer_config.write().is_counting = false;
+                        timer_config.write().is_pausing = true;
                     },
                     PauseIcon {}
                 },
                 Button {
                     on_click: move |_event| {
                         timer_config.write().is_counting = false;
+                        timer_config.write().show_set_time = true;
+                        timer_config.write().is_pausing = false;
                         *cx.props.count.make_mut() = times.read()[cx.props.idx].set_time * 60;
                     },
                     ResetIcon {},
                 },
                 Button {
                     on_click: move |_event| {
-                       //
+                        *cx.props.count.make_mut() = 0;
                     },
                     NextIcon {},
                 },

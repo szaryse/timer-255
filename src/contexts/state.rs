@@ -35,4 +35,6 @@ pub fn create_initial_times() -> Vec<ActivityTime> {
 pub struct Timer {
     pub is_counting: bool,
     pub idx: usize,
+    pub show_set_time: bool,
+    pub is_pausing: bool,
 }

@@ -9,5 +9,8 @@ pub fn global_styles() -> &'static str {
             html {
                 font-family: 'Consolas', sans-serif;
             }
+            svg:hover path {
+                fill: #00FF00;
+            }
         </style>"
 }

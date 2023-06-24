@@ -44,6 +44,8 @@ fn App(cx: Scope) -> Element {
     use_shared_state_provider(cx, || Timer {
         is_counting: false,
         idx: 1,
+        show_set_time: true,
+        is_pausing: false,
     });
 
     let timer_config = use_shared_state::<Timer>(cx).unwrap();
@@ -52,6 +54,17 @@ fn App(cx: Scope) -> Element {
     let idx = timer_config.read().idx;
     let count = use_state(cx, || times.read()[idx].set_time * 60);
     let is_counting = timer_config.read().is_counting;
+    let show_set_time = timer_config.read().show_set_time;
+
+    if **count == 0 {
+        let new_idx = match idx {
+            0 => 1,
+            1 => 0,
+            _ => unreachable!(),
+        };
+        *count.make_mut() = times.read()[new_idx].set_time * 60;
+        timer_config.write().idx = new_idx;
+    }
 
     use_future(cx, &is_counting, move |_| {
         let mut count = count.clone();
@@ -79,7 +92,15 @@ fn App(cx: Scope) -> Element {
                 },
                 TimeLabel {
                     text: current_text,
-                    count: **count,
+                    count: match is_counting {
+                        true => **count,
+                        false => {
+                            match show_set_time {
+                                true => times.read()[idx].set_time * 60,
+                                false => **count
+                            }
+                        }
+                    }
                 },
                 Flexbox {
                     Flexbox {
