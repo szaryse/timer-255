@@ -24,7 +24,7 @@ fn main() {
                 WindowBuilder::new()
                     .with_inner_size(LogicalSize::new(960, 160))
                     .with_always_on_top(true)
-                    .with_title("Timer 255 - Dioxus.rs")
+                    .with_title("Timer 255")
                     // INFO: position only for development
                     .with_position(PhysicalPosition::new(2870, -60)),
             )
@@ -54,7 +54,6 @@ fn App(cx: Scope) -> Element {
     let idx = timer_config.read().idx;
     let count = use_state(cx, || times.read()[idx].set_time * 60);
     let is_counting = timer_config.read().is_counting;
-    let show_set_time = timer_config.read().show_set_time;
 
     if **count == 0 {
         let new_idx = match idx {
@@ -78,29 +77,18 @@ fn App(cx: Scope) -> Element {
         }
     });
 
-    let current_text = times.read()[idx].activity_name.clone();
-
     cx.render(rsx! {
         div {
             style: app_style,
             Flexbox {
                 padding: "16px",
                 height: "100%",
-                Controls {
-                    idx: 1,
-                    count: count
-                },
                 TimeLabel {
-                    text: current_text,
-                    count: match is_counting {
-                        true => **count,
-                        false => {
-                            match show_set_time {
-                                true => times.read()[idx].set_time * 60,
-                                false => **count
-                            }
-                        }
-                    }
+                    count: **count
+                },
+                Controls {
+                    idx: idx,
+                    count: count
                 },
                 Flexbox {
                     Flexbox {
