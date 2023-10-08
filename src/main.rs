@@ -1,5 +1,5 @@
 #![allow(non_snake_case)]
-use contexts::state::{create_initial_times, ActivityTime, Timer};
+use contexts::state::{Activity, TimerState};
 use dioxus::prelude::*;
 use dioxus_desktop::{
     tao::dpi::{LogicalSize, PhysicalPosition},
@@ -40,38 +40,20 @@ fn App(cx: Scope) -> Element {
         color: #c0c0c0;
     ";
 
-    use_shared_state_provider(cx, || create_initial_times());
-    use_shared_state_provider(cx, || Timer {
-        is_counting: false,
-        idx: 1,
-        show_set_time: true,
-        is_pausing: false,
-    });
+    use_shared_state_provider(cx, || TimerState::new());
 
-    let timer_config = use_shared_state::<Timer>(cx).unwrap();
-    let times = use_shared_state::<Vec<ActivityTime>>(cx).unwrap();
-
-    let idx = timer_config.read().idx;
-    let count = use_state(cx, || times.read()[idx].set_time * 60);
-    let is_counting = timer_config.read().is_counting;
-
-    if **count == 0 {
-        let new_idx = match idx {
-            0 => 1,
-            1 => 0,
-            _ => unreachable!(),
-        };
-        *count.make_mut() = times.read()[new_idx].set_time * 60;
-        timer_config.write().idx = new_idx;
-    }
+    let timer_state = use_shared_state::<TimerState>(cx).unwrap();
+    let is_counting = timer_state.read().is_counting;
+    let count = timer_state.read().count;
 
     use_future(cx, &is_counting, move |_| {
-        let mut count = count.clone();
+        let timer_state = timer_state.clone();
+
         async move {
             loop {
                 tokio::time::sleep(Duration::from_millis(1000)).await;
                 if is_counting {
-                    count -= 1;
+                    timer_state.write().tick();
                 }
             }
         }
@@ -84,10 +66,9 @@ fn App(cx: Scope) -> Element {
                 padding: "16px",
                 height: "100%",
                 TimeLabel {
-                    count: **count
+                    count: count.clone()
                 },
                 Controls {
-                    idx: idx,
                     count: count
                 },
                 Flexbox {
@@ -97,7 +78,7 @@ fn App(cx: Scope) -> Element {
                             text: "Break Length"
                         },
                         TimeSetter {
-                            idx: 0
+                            activity_type: Activity::Break
                         }
                     },
                     Flexbox {
@@ -106,7 +87,7 @@ fn App(cx: Scope) -> Element {
                             text: "Session Length"
                         },
                         TimeSetter {
-                            idx: 1
+                            activity_type: Activity::Session
                         }
                     }
                 }

@@ -1,5 +1,5 @@
 #![allow(non_snake_case)]
-use crate::contexts::state::{ActivityTime, Timer};
+use crate::contexts::state::TimerState;
 use crate::ui::components::flexbox::Flexbox;
 use crate::ui::components::label::Label;
 use crate::ui::components::wrapper::Wrapper;
@@ -8,25 +8,19 @@ use dioxus::prelude::*;
 
 #[derive(PartialEq, Props)]
 pub struct TimeLabelProps {
-    // text: String,
     count: u32,
 }
 
 pub fn TimeLabel(cx: Scope<TimeLabelProps>) -> Element {
-    let times = use_shared_state::<Vec<ActivityTime>>(cx).unwrap();
-    let timer_config = use_shared_state::<Timer>(cx).unwrap();
+    let timer_state = use_shared_state::<TimerState>(cx).unwrap();
 
-    let current_text = times.read()[timer_config.read().idx].activity_name.clone();
-    let is_counting = timer_config.read().is_counting;
-    let show_set_time = timer_config.read().show_set_time;
-    let set_time = times.read()[timer_config.read().idx].set_time;
+    let current_text = timer_state.read().select_label();
+    let count = timer_state.read().count;
+    let is_counting = timer_state.read().is_counting;
 
     let time = match is_counting {
         true => cx.props.count,
-        false => match show_set_time {
-            true => set_time * 60,
-            false => cx.props.count,
-        },
+        false => count,
     };
 
     let minutes = time / 60;
@@ -34,7 +28,8 @@ pub fn TimeLabel(cx: Scope<TimeLabelProps>) -> Element {
     let time = format!("{}:{seconds:0>2}", minutes, seconds = seconds);
 
     let color = match cx.props.count {
-        (0..=180) => cx.props.count,
+        (0..=30) => 0,
+        (31..=210) => cx.props.count - 30,
         _ => 180,
     };
 

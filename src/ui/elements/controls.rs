@@ -6,22 +6,18 @@ use crate::ui::icons::next_icon::NextIcon;
 use crate::ui::icons::pause_icon::PauseIcon;
 use crate::ui::icons::play_icon::PlayIcon;
 
-use crate::contexts::state::{ActivityTime, Timer};
+use crate::contexts::state::{TimerAction, TimerState};
 use crate::ui::icons::reset_icon::ResetIcon;
 
 use dioxus::prelude::*;
 
 #[derive(PartialEq, Props)]
-pub struct ControlsProps<'a> {
-    idx: usize,
-    count: &'a UseState<u32>,
+pub struct ControlsProps {
+    count: u32,
 }
 
-pub fn Controls<'a>(cx: Scope<'a, ControlsProps<'a>>) -> Element {
-    let timer_config = use_shared_state::<Timer>(cx).unwrap();
-    let times = use_shared_state::<Vec<ActivityTime>>(cx).unwrap();
-
-    let is_counting = timer_config.read().is_counting;
+pub fn Controls<'a>(cx: Scope<'a, ControlsProps>) -> Element {
+    let timer_state = use_shared_state::<TimerState>(cx).unwrap();
 
     cx.render(rsx! {
         Wrapper {
@@ -30,36 +26,25 @@ pub fn Controls<'a>(cx: Scope<'a, ControlsProps<'a>>) -> Element {
                 justify_content: "space-evenly",
                 Button {
                     on_click: move |_event| {
-                        if !is_counting {
-                            timer_config.write().is_counting = true;
-                            timer_config.write().show_set_time = false;
-                            if !timer_config.read().is_pausing {
-                                *cx.props.count.make_mut() = times.read()[cx.props.idx].set_time * 60;
-                            }
-                            timer_config.write().is_pausing = false;
-                        }
+                        timer_state.write().reduce(TimerAction::StartTime);
                     },
                     PlayIcon {},
                 },
                 Button {
                     on_click: move |_event| {
-                        timer_config.write().is_counting = false;
-                        timer_config.write().is_pausing = true;
+                        timer_state.write().reduce(TimerAction::PauseTime);
                     },
                     PauseIcon {}
                 },
                 Button {
                     on_click: move |_event| {
-                        timer_config.write().is_counting = false;
-                        timer_config.write().show_set_time = true;
-                        timer_config.write().is_pausing = false;
-                        *cx.props.count.make_mut() = times.read()[cx.props.idx].set_time * 60;
+                        timer_state.write().reduce(TimerAction::ResetTime);
                     },
                     ResetIcon {},
                 },
                 Button {
                     on_click: move |_event| {
-                        *cx.props.count.make_mut() = 0;
+                        timer_state.write().reduce(TimerAction::NextActivity);
                     },
                     NextIcon {},
                 },
