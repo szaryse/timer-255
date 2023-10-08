@@ -1,5 +1,5 @@
 #![allow(non_snake_case)]
-use contexts::state::{Activity, TimerState};
+use crate::contexts::state::{Activity, TimerState};
 use dioxus::prelude::*;
 use dioxus_desktop::{
     tao::dpi::{LogicalSize, PhysicalPosition},
@@ -7,11 +7,9 @@ use dioxus_desktop::{
 };
 use std::time::Duration;
 
-use crate::ui::components::label::Label;
-use crate::ui::elements::time_label::TimeLabel;
-use crate::ui::elements::time_setter::TimeSetter;
-use crate::ui::global_styles::*;
-use crate::ui::{components::flexbox::Flexbox, elements::controls::Controls};
+use crate::ui::components::{flexbox::Flexbox, label::Label};
+use crate::ui::elements::{controls::Controls, time_label::TimeLabel, time_setter::TimeSetter};
+use crate::ui::global_styles::global_styles;
 
 pub mod contexts;
 pub mod ui;

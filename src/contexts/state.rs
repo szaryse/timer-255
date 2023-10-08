@@ -146,7 +146,20 @@ impl TimerState {
     }
 
     pub fn tick(&mut self) {
-        self.count -= 1;
+        if self.count == 0 {
+            match self.activity_type {
+                Activity::Break => {
+                    self.activity_type = Activity::Session;
+                    self.count = self.session_time.set_time * 60 - 1;
+                }
+                Activity::Session => {
+                    self.activity_type = Activity::Break;
+                    self.count = self.break_time.set_time * 60 - 1;
+                }
+            }
+        } else {
+            self.count -= 1;
+        }
     }
 
     pub fn select_label(&self) -> String {
