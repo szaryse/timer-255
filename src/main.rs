@@ -1,5 +1,8 @@
 #![allow(non_snake_case)]
-use crate::contexts::state::{Activity, TimerState};
+use crate::{
+    contexts::state::TimerState,
+    ui::{components::button::Button, icons::exit::ExitIcon},
+};
 use dioxus::prelude::*;
 use dioxus_desktop::{
     tao::dpi::{LogicalSize, PhysicalPosition},
@@ -7,8 +10,8 @@ use dioxus_desktop::{
 };
 use std::time::Duration;
 
-use crate::ui::components::{flexbox::Flexbox, label::Label};
-use crate::ui::elements::{controls::Controls, time_label::TimeLabel, time_setter::TimeSetter};
+use crate::ui::components::flexbox::Flexbox;
+use crate::ui::elements::{controls::Controls, settings::Settings, time_label::TimeLabel};
 use crate::ui::global_styles::global_styles;
 
 pub mod contexts;
@@ -24,7 +27,7 @@ fn main() {
                     .with_always_on_top(true)
                     .with_title("Timer 255")
                     // INFO: position only for development
-                    .with_position(PhysicalPosition::new(2870, -60)),
+                    .with_position(PhysicalPosition::new(2870, 60)),
             )
             .with_custom_head(global_styles().to_string()),
     );
@@ -37,12 +40,14 @@ fn App(cx: Scope) -> Element {
         background-color: #181818;
         color: #c0c0c0;
     ";
+    let window = dioxus_desktop::use_window(cx);
 
     use_shared_state_provider(cx, || TimerState::new());
-
     let timer_state = use_shared_state::<TimerState>(cx).unwrap();
+
     let is_counting = timer_state.read().is_counting;
     let count = timer_state.read().count;
+    let is_settings_open = timer_state.read().is_settings_open;
 
     use_future(cx, &is_counting, move |_| {
         let timer_state = timer_state.clone();
@@ -57,39 +62,39 @@ fn App(cx: Scope) -> Element {
         }
     });
 
-    cx.render(rsx! {
-        div {
-            style: app_style,
-            Flexbox {
-                padding: "16px",
-                height: "100%",
-                TimeLabel {
-                    count: count.clone()
-                },
-                Controls {
-                    count: count
-                },
+    if is_settings_open {
+        cx.render(rsx! {
+            div {
+                style: app_style,
                 Flexbox {
-                    Flexbox {
-                        direction: "column",
-                        Label {
-                            text: "Break Length"
-                        },
-                        TimeSetter {
-                            activity_type: Activity::Break
-                        }
+                    padding: "16px",
+                    height: "100%",
+                    TimeLabel {
+                        count: count.clone()
                     },
-                    Flexbox {
-                        direction: "column",
-                        Label {
-                            text: "Session Length"
+                    Settings {}
+                },
+            }
+        })
+    } else {
+        cx.render(rsx! {
+            div {
+                style: app_style,
+                Flexbox {
+                    padding: "16px",
+                    height: "100%",
+                    TimeLabel {
+                        count: count.clone()
+                    },
+                    Controls {},
+                    Button {
+                        on_click: move |_event| {
+                            window.close();
                         },
-                        TimeSetter {
-                            activity_type: Activity::Session
-                        }
-                    }
-                }
-            },
-        }
-    })
+                        ExitIcon {}
+                    },
+                },
+            }
+        })
+    }
 }

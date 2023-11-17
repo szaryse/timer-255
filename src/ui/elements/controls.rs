@@ -2,6 +2,7 @@
 use crate::ui::components::button::Button;
 use crate::ui::components::flexbox::Flexbox;
 use crate::ui::components::wrapper::Wrapper;
+use crate::ui::icons::menu_icon::MenuIcon;
 use crate::ui::icons::next_icon::NextIcon;
 use crate::ui::icons::pause_icon::PauseIcon;
 use crate::ui::icons::play_icon::PlayIcon;
@@ -11,12 +12,7 @@ use crate::ui::icons::reset_icon::ResetIcon;
 
 use dioxus::prelude::*;
 
-#[derive(PartialEq, Props)]
-pub struct ControlsProps {
-    count: u32,
-}
-
-pub fn Controls<'a>(cx: Scope<'a, ControlsProps>) -> Element {
+pub fn Controls<'a>(cx: Scope<'a>) -> Element {
     let timer_state = use_shared_state::<TimerState>(cx).unwrap();
 
     cx.render(rsx! {
@@ -47,6 +43,12 @@ pub fn Controls<'a>(cx: Scope<'a, ControlsProps>) -> Element {
                         timer_state.write().reduce(TimerAction::NextActivity);
                     },
                     NextIcon {},
+                },
+                Button {
+                    on_click: move |_event| {
+                        timer_state.write().reduce(TimerAction::OpenSettings);
+                    },
+                    MenuIcon {},
                 },
             }
         }
