@@ -1,8 +1,5 @@
 #![allow(non_snake_case)]
-use crate::{
-    contexts::state::TimerState,
-    ui::{components::button::Button, icons::exit::ExitIcon},
-};
+use crate::contexts::state::TimerState;
 use dioxus::prelude::*;
 use dioxus_desktop::{
     tao::dpi::{LogicalSize, PhysicalPosition},
@@ -23,7 +20,7 @@ fn main() {
         Config::new()
             .with_window(
                 WindowBuilder::new()
-                    .with_inner_size(LogicalSize::new(960, 160))
+                    .with_inner_size(LogicalSize::new(480, 96))
                     .with_always_on_top(true)
                     .with_title("Timer 255")
                     // INFO: position only for development
@@ -40,7 +37,6 @@ fn App(cx: Scope) -> Element {
         background-color: #181818;
         color: #c0c0c0;
     ";
-    let window = dioxus_desktop::use_window(cx);
 
     use_shared_state_provider(cx, || TimerState::new());
     let timer_state = use_shared_state::<TimerState>(cx).unwrap();
@@ -67,11 +63,9 @@ fn App(cx: Scope) -> Element {
             div {
                 style: app_style,
                 Flexbox {
-                    padding: "16px",
+                    padding: "8px",
                     height: "100%",
-                    TimeLabel {
-                        count: count.clone()
-                    },
+                    justify_content: "space-between",
                     Settings {}
                 },
             }
@@ -81,18 +75,12 @@ fn App(cx: Scope) -> Element {
             div {
                 style: app_style,
                 Flexbox {
-                    padding: "16px",
+                    padding: "8px",
                     height: "100%",
                     TimeLabel {
                         count: count.clone()
                     },
                     Controls {},
-                    Button {
-                        on_click: move |_event| {
-                            window.close();
-                        },
-                        ExitIcon {}
-                    },
                 },
             }
         })

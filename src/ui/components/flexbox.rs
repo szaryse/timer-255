@@ -9,6 +9,8 @@ pub struct FlexboxProps<'a> {
     justify_content: &'a str,
     #[props(default = "0")]
     padding: &'a str,
+    #[props(default = "100%")]
+    width: &'a str,
     #[props(default = "auto")]
     height: &'a str,
     children: Element<'a>,
@@ -22,7 +24,7 @@ pub fn Flexbox<'a>(cx: Scope<'a, FlexboxProps<'a>>) -> Element {
             justify_content: cx.props.justify_content,
             align_items: "center",
             flex_grow: 1,
-            width: "100%",
+            width: cx.props.width,
             height: cx.props.height,
             padding: cx.props.padding,
             &cx.props.children

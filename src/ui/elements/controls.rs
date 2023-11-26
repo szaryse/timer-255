@@ -17,9 +17,9 @@ pub fn Controls<'a>(cx: Scope<'a>) -> Element {
 
     cx.render(rsx! {
         Wrapper {
-            width: "240px",
+            width: "280px",
             Flexbox {
-                justify_content: "space-evenly",
+                justify_content: "space-between",
                 Button {
                     on_click: move |_event| {
                         timer_state.write().reduce(TimerAction::StartTime);
@@ -44,12 +44,16 @@ pub fn Controls<'a>(cx: Scope<'a>) -> Element {
                     },
                     NextIcon {},
                 },
-                Button {
-                    on_click: move |_event| {
-                        timer_state.write().reduce(TimerAction::OpenSettings);
+                Wrapper{
+                    width: "40px",
+                    margin: "0 0 0 16px",
+                    Button {
+                        on_click: move |_event| {
+                            timer_state.write().reduce(TimerAction::OpenSettings);
+                        },
+                        MenuIcon {},
                     },
-                    MenuIcon {},
-                },
+                }
             }
         }
 

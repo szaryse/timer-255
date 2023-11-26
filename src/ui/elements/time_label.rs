@@ -35,7 +35,8 @@ pub fn TimeLabel(cx: Scope<TimeLabelProps>) -> Element {
 
     cx.render(rsx! {
             Wrapper {
-                width: "240px",
+                width: "140px",
+                padding: "0 24px 0 0",
                 Flexbox{
                     direction: "column",
                     Label {
