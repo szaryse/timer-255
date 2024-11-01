@@ -1,4 +1,4 @@
 pub mod button;
 pub mod flexbox;
-pub mod label;
+pub mod text;
 pub mod wrapper;

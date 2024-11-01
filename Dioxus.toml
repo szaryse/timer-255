@@ -1,9 +1,0 @@
-[application]
-name = "timer-255"
-default_platform = "desktop"
-
-[web.app]
-
-[web.watcher]
-
-[web.resource.dev]

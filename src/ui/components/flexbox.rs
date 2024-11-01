@@ -1,36 +1,40 @@
 #![allow(non_snake_case)]
 use dioxus::prelude::*;
 
-#[derive(Props)]
-pub struct FlexboxProps<'a> {
-    #[props(default = "row")]
-    direction: &'a str,
-    #[props(default = "center")]
-    justify_content: &'a str,
-    #[props(default = "0")]
-    padding: &'a str,
-    #[props(default = "100%")]
-    width: &'a str,
-    #[props(default = "auto")]
-    height: &'a str,
-    #[props(default = 1)]
-    flex_grow: i64,
-    children: Element<'a>,
+#[derive(PartialEq, Props, Clone)]
+pub struct FlexboxProps {
+    #[props(default = "row".to_string())]
+    direction: String,
+    #[props(default = "center".to_string())]
+    justify_content: String,
+    #[props(default = "center".to_string())]
+    align_items: String,
+    #[props(default = "0".to_string())]
+    padding: String,
+    #[props(default = "auto".to_string())]
+    height: String,
+    #[props(default = "100%".to_string())]
+    width: String,
+    #[props(default = "1".to_string())]
+    flex_grow: String,
+    #[props(default = "0".to_string())]
+    outline: String,
+    children: Element,
 }
 
-pub fn Flexbox<'a>(cx: Scope<'a, FlexboxProps<'a>>) -> Element {
-    cx.render(rsx! {
+pub fn Flexbox(props: FlexboxProps) -> Element {
+    rsx! {
         div {
             display: "flex",
-            flex_direction: cx.props.direction,
-            justify_content: cx.props.justify_content,
-            align_items: "center",
-            flex_grow: cx.props.flex_grow,
-            width: cx.props.width,
-            height: cx.props.height,
-            padding: cx.props.padding,
-            // border: "1px solid red",
-            &cx.props.children
+            flex_direction: "{ props.direction }",
+            justify_content: "{ props.justify_content }",
+            align_items: "{ props.align_items }",
+            flex_grow: "{ props.flex_grow }",
+            width: "{ props.width }",
+            height: "{ props.height }",
+            padding: "{ props.padding }",
+            outline: "{props.outline}",
+            {props.children}
         }
-    })
+    }
 }

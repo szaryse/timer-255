@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-pub fn CancelIcon(cx: Scope) -> Element {
+pub fn CancelIcon() -> Element {
     let contents = r"m480-424 116 116q11 11 28 11t28-11q11-11 
     11-28t-11-28L536-480l116-116q11-11 11-28t-11-28q-11-11-28-11t-28 
     11L480-536 364-652q-11-11-28-11t-28 11q-11 11-11 28t11 28l116 116-116 
@@ -11,7 +11,7 @@ pub fn CancelIcon(cx: Scope) -> Element {
     227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 
     93Zm0-320Z";
 
-    cx.render(rsx! {
+    rsx! {
         svg {
             xmlns: "http://www.w3.org/2000/svg",
             height: "40",
@@ -22,5 +22,5 @@ pub fn CancelIcon(cx: Scope) -> Element {
                 fill: "#008000",
             }
         }
-    })
+    }
 }

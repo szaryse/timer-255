@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-pub fn NextIcon(cx: Scope) -> Element {
+pub fn NextIcon() -> Element {
     let contents = r"M240-406h60q5-64 51.5-107T463-556q42 0 86 24t72 
     66h-88v60h187v-187h-60v86q-37-54-91-81.5T463-616q-91 0-154.5 
     61T240-406ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 
@@ -10,7 +10,7 @@ pub fn NextIcon(cx: Scope) -> Element {
     241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 
     99.5 240.5T480-140Zm0-340Z";
 
-    cx.render(rsx! {
+    rsx! {
         svg {
             xmlns: "http://www.w3.org/2000/svg",
             height: "40",
@@ -21,5 +21,5 @@ pub fn NextIcon(cx: Scope) -> Element {
                 fill: "#008000",
             }
         }
-    })
+    }
 }

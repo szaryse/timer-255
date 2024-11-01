@@ -1,47 +1,48 @@
 #![allow(non_snake_case)]
-use crate::contexts::state::{TimerAction, TimerState};
-use crate::ui::components::button::Button;
-use crate::ui::components::flexbox::Flexbox;
-use crate::ui::components::label::Label;
-use crate::ui::icons::chevron_right::ChevronRightIcon;
 
 use dioxus::prelude::*;
 
-#[derive(PartialEq, Props)]
+use crate::contexts::state::{TimerAction, TimerState};
+use crate::ui::components::button::Button;
+use crate::ui::components::flexbox::Flexbox;
+use crate::ui::components::text::Text;
+use crate::ui::icons::chevron_right::ChevronRightIcon;
+
+#[derive(PartialEq, Props, Clone)]
 pub struct TimeLabelProps {
     count: u32,
 }
 
-pub fn TimeLabel(cx: Scope<TimeLabelProps>) -> Element {
-    let timer_state = use_shared_state::<TimerState>(cx).unwrap();
+pub fn TimeLabel(props: TimeLabelProps) -> Element {
+    // let timer_state = use_shared_state::<TimerState>(cx).unwrap();
 
-    let current_text = timer_state.read().select_label();
-    let count = timer_state.read().count;
-    let is_counting = timer_state.read().is_counting;
+    let current_text = "?".to_string(); // timer_state.read().select_label();
+    // let count = timer_state.read().count;
+    // let is_counting = timer_state.read().is_counting;
 
-    let time = match is_counting {
-        true => cx.props.count,
-        false => count,
-    };
+    // let time = match is_counting {
+    //     true => props.count,
+    //     false => count,
+    // };
 
-    let minutes = time / 60;
-    let seconds = time - minutes * 60;
+    let minutes = 0; // time / 60;
+    let seconds = 60; // time - minutes * 60;
     let time = format!("{}:{seconds:0>2}", minutes, seconds = seconds);
 
-    let color = match cx.props.count {
+    let color = match props.count {
         (0..=30) => 0,
-        (31..=210) => cx.props.count - 30,
+        (31..=210) => props.count - 30,
         _ => 180,
     };
 
-    cx.render(rsx! {
+    rsx! {
         Flexbox {
             justify_content: "space-between",
-            Label {
+            Text {
                 font_size: "24px",
                 text: "{current_text}"
             },
-            Label {
+            Text {
                 font_size: "48px",
                 text: "{time}",
                 color: "hsl({color}, 100%, 50%)",
@@ -51,11 +52,11 @@ pub fn TimeLabel(cx: Scope<TimeLabelProps>) -> Element {
                 flex_grow: 0,
                 Button {
                     on_click: move |_event| {
-                        timer_state.write().reduce(TimerAction::GoToControls);
+                        // timer_state.write().reduce(TimerAction::GoToControls);
                     },
                     ChevronRightIcon {},
                 },
             }
         }
-    })
+    }
 }

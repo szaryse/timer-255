@@ -4,9 +4,10 @@ use crate::{
     ui::{components::button::Button, elements::view_wrapper::ViewWrapper, icons::exit::ExitIcon},
 };
 use dioxus::prelude::*;
-use dioxus_desktop::{
+use dioxus::desktop::{
     tao::dpi::{LogicalSize, PhysicalPosition},
     Config, WindowBuilder,
+    use_window,
 };
 use std::time::Duration;
 
@@ -17,9 +18,8 @@ pub mod contexts;
 pub mod ui;
 
 fn main() {
-    dioxus_desktop::launch_cfg(
-        App,
-        Config::new()
+    LaunchBuilder::desktop()
+        .with_cfg(Config::new()
             .with_window(
                 WindowBuilder::new()
                     .with_inner_size(LogicalSize::new(360, 64))
@@ -29,56 +29,61 @@ fn main() {
                     // INFO: position only for development
                     .with_position(PhysicalPosition::new(2870, 60)),
             )
-            .with_custom_head(global_styles().to_string()),
-    );
+            .with_custom_head(global_styles())
+        )
+        .launch(App);
 }
 
-fn App(cx: Scope) -> Element {
-    use_shared_state_provider(cx, || TimerState::new());
-    let timer_state = use_shared_state::<TimerState>(cx).unwrap();
+fn App() -> Element {
+    // use_shared_state_provider(cx, || TimerState::new());
+    // let timer_state = use_shared_state::<TimerState>(cx).unwrap();
 
-    let is_counting = timer_state.read().is_counting;
-    let count = timer_state.read().count;
-    let is_timer_open = timer_state.read().is_timer_open;
-    let is_controls_open = timer_state.read().is_controls_open;
-    let is_settings_open = timer_state.read().is_settings_open;
-    let window = dioxus_desktop::use_window(cx);
+    // let is_counting = timer_state.read().is_counting;
+    // let count = timer_state.read().count;
+    let is_timer_open = true; // timer_state.read().is_timer_open;
+    let is_controls_open = false; // timer_state.read().is_controls_open;
+    let is_settings_open = false; // timer_state.read().is_settings_open;
+    let window = use_window();
 
-    use_future(cx, &is_counting, move |_| {
-        let timer_state = timer_state.clone();
+    let _ = use_resource(
+        move || async move {
+            // let timer_state = timer_state.clone();
 
-        async move {
+            //async move {
             loop {
                 tokio::time::sleep(Duration::from_millis(1000)).await;
-                if is_counting {
-                    timer_state.write().tick();
-                }
+
+                println!("tick");
+
+                // if is_counting {
+                //     timer_state.write().tick();
+                // }
             }
-        }
-    });
+            //}
+        });
 
     if is_timer_open {
-        cx.render(rsx! {
+        rsx! {
             ViewWrapper {
                 TimeLabel {
-                    count: count.clone()
+                    count: 1, // count.clone()
                 },
             },
-        })
+        }
     } else if is_controls_open {
-        cx.render(rsx! {
+        rsx! {
             ViewWrapper {
                 Controls {},
             },
-        })
+        }
     } else if is_settings_open {
-        cx.render(rsx! {
+        rsx! {
             ViewWrapper{
                 Settings {}
             },
-        })
+        }
     } else {
-        cx.render(rsx! {
+        rsx! {
             ViewWrapper {
                 justify_content: "space-evenly",
                 "Something went wrong.",
@@ -89,6 +94,6 @@ fn App(cx: Scope) -> Element {
                     ExitIcon {}
                 },
             }
-        })
+        }
     }
 }

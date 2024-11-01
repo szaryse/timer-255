@@ -1,4 +1,4 @@
-pub fn global_styles() -> &'static str {
+pub fn global_styles() -> String {
     r"
         <style>
             * {
@@ -12,5 +12,5 @@ pub fn global_styles() -> &'static str {
             svg:hover path {
                 fill: #00FF00;
             }
-        </style>"
+        </style>".to_string()
 }

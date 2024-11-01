@@ -1,28 +1,28 @@
 #![allow(non_snake_case)]
 use dioxus::prelude::*;
 
-#[derive(Props)]
-pub struct WrapperProps<'a> {
-    #[props(default = "100%")]
-    width: &'a str,
-    #[props(default = "auto")]
-    height: &'a str,
-    #[props(default = "0")]
-    margin: &'a str,
-    #[props(default = "0")]
-    padding: &'a str,
-    children: Element<'a>,
+#[derive(PartialEq, Props, Clone)]
+pub struct WrapperProps {
+    #[props(default = "100%".to_string())]
+    width: String,
+    #[props(default = "auto".to_string())]
+    height: String,
+    #[props(default = "0".to_string())]
+    margin: String,
+    #[props(default = "0".to_string())]
+    padding: String,
+    children: Element,
 }
 
-pub fn Wrapper<'a>(cx: Scope<'a, WrapperProps<'a>>) -> Element {
-    cx.render(rsx! {
+pub fn Wrapper(props: WrapperProps) -> Element {
+    rsx! {
         div {
-            width: cx.props.width,
-            height: cx.props.height,
-            margin: cx.props.margin,
-            padding: cx.props.padding,
+            width: props.width,
+            height: props.height,
+            margin: props.margin,
+            padding: props.padding,
             flex_shrink: 0,
-            &cx.props.children
+            {props.children}
         }
-    })
+    }
 }

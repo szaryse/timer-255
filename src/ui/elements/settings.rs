@@ -1,15 +1,17 @@
+use dioxus::prelude::*;
+use dioxus::desktop::use_window;
+
 use crate::contexts::state::{Activity, TimerAction, TimerState};
-use crate::ui::components::{button::Button, flexbox::Flexbox, label::Label};
+use crate::ui::components::{button::Button, flexbox::Flexbox, text::Text};
 use crate::ui::elements::time_setter::TimeSetter;
 use crate::ui::icons::chevron_left::ChevronLeftIcon;
 use crate::ui::icons::exit::ExitIcon;
-use dioxus::prelude::*;
 
-pub fn Settings<'a>(cx: Scope<'a>) -> Element {
-    let timer_state = use_shared_state::<TimerState>(cx).unwrap();
-    let window = dioxus_desktop::use_window(cx);
+pub fn Settings() -> Element {
+    // let timer_state = use_shared_state::<TimerState>(cx).unwrap();
+    let window = use_window();
 
-    cx.render(rsx! {
+    rsx! {
         Flexbox {
             width: "100%",
             justify_content: "space-between",
@@ -17,7 +19,7 @@ pub fn Settings<'a>(cx: Scope<'a>) -> Element {
                 width: "40px",
                 Button {
                     on_click: move |_event| {
-                        timer_state.write().reduce(TimerAction::GoBackToControls);
+                        // timer_state.write().reduce(TimerAction::GoBackToControls);
                     },
                     ChevronLeftIcon {},
                 },
@@ -28,7 +30,7 @@ pub fn Settings<'a>(cx: Scope<'a>) -> Element {
                 Flexbox {
                     height: "26px",
                     justify_content: "space-between",
-                    Label {
+                    Text {
                         font_size: "20px",
                         text: "Session Length"
                     },
@@ -39,7 +41,7 @@ pub fn Settings<'a>(cx: Scope<'a>) -> Element {
                 Flexbox {
                     height: "26px",
                     justify_content: "space-between",
-                    Label {
+                    Text {
                         font_size: "20px",
                         text: "Break Length"
                     },
@@ -59,5 +61,5 @@ pub fn Settings<'a>(cx: Scope<'a>) -> Element {
                 },
             }
         }
-    })
+    }
 }

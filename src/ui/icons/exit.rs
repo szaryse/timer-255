@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-pub fn ExitIcon(cx: Scope) -> Element {
+pub fn ExitIcon() -> Element {
     let contents = r"M200-120q-33 0-56.5-23.5T120-200v-560q0-33 
     23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 
     28.5T440-760H200v560h240q17 0 28.5 11.5T480-160q0 17-11.5 
@@ -9,7 +9,7 @@ pub fn ExitIcon(cx: Scope) -> Element {
     143q12 12 12 28t-12 28L669-309q-12 12-28.5 
     11.5T612-310q-11-12-10.5-28.5T613-366l74-74Z";
 
-    cx.render(rsx! {
+    rsx! {
         svg {
             xmlns: "http://www.w3.org/2000/svg",
             height: "40",
@@ -20,5 +20,5 @@ pub fn ExitIcon(cx: Scope) -> Element {
                 fill: "#008000",
             }
         }
-    })
+    }
 }

@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-pub fn ResetIcon(cx: Scope) -> Element {
+pub fn ResetIcon() -> Element {
     let contents = r"m482-200 114-113-114-113-42 42 43 43q-28 
     1-54.5-9T381-381q-20-20-30.5-46T340-479q0-17 4.5-34t12.5-33l-44-44q-17 
     25-25 53t-8 57q0 38 15 75t44 66q29 29 65 43.5t74 15.5l-38 38 42 
@@ -14,7 +14,7 @@ pub fn ResetIcon(cx: Scope) -> Element {
     241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 
     99.5 240.5T480-140Zm0-340Z";
 
-    cx.render(rsx! {
+    rsx! {
         svg {
             xmlns: "http://www.w3.org/2000/svg",
             height: "40",
@@ -25,5 +25,5 @@ pub fn ResetIcon(cx: Scope) -> Element {
                 fill: "#008000",
             }
         }
-    })
+    }
 }

@@ -1,12 +1,12 @@
 use dioxus::prelude::*;
 
-#[derive(PartialEq, Props)]
-pub struct PlusIconProps<'a> {
-    #[props(default = "40")]
-    size: &'a str,
+#[derive(PartialEq, Props, Clone)]
+pub struct PlusIconProps {
+    #[props(default = "40".to_string())]
+    size: String,
 }
 
-pub fn PlusIcon<'a>(cx: Scope<'a, PlusIconProps<'a>>) -> Element {
+pub fn PlusIcon(props: PlusIconProps) -> Element {
     let contents = r"
     M453-280h60v-166h167v-60H513v-174h-60v174H280v60h173v166Zm27.266 
     200q-82.734 0-155.5-31.5t-127.266-86q-54.5-54.5-86-127.341Q80-397.681 
@@ -17,16 +17,16 @@ pub fn PlusIcon<'a>(cx: Scope<'a, PlusIconProps<'a>>) -> Element {
     480-820q-141 0-240.5 98.812Q140-622.375 140-480q0 141 99.5 240.5t241 
     99.5Zm-.5-340Z";
 
-    cx.render(rsx! {
+    rsx! {
         svg {
             xmlns: "http://www.w3.org/2000/svg",
-            height: cx.props.size,
-            width: cx.props.size,
+            height: props.size.clone(),
+            width: props.size,
             view_box: "0 -960 960 960",
             path {
                 d: "{contents}",
                 fill: "#008000",
             }
         }
-    })
+    }
 }
