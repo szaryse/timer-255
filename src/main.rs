@@ -1,5 +1,8 @@
 #![allow(non_snake_case)]
-use crate::contexts::state::TimerState;
+use crate::{
+    contexts::state::TimerState,
+    ui::{components::button::Button, elements::view_wrapper::ViewWrapper, icons::exit::ExitIcon},
+};
 use dioxus::prelude::*;
 use dioxus_desktop::{
     tao::dpi::{LogicalSize, PhysicalPosition},
@@ -7,7 +10,6 @@ use dioxus_desktop::{
 };
 use std::time::Duration;
 
-use crate::ui::components::flexbox::Flexbox;
 use crate::ui::elements::{controls::Controls, settings::Settings, time_label::TimeLabel};
 use crate::ui::global_styles::global_styles;
 
@@ -20,9 +22,10 @@ fn main() {
         Config::new()
             .with_window(
                 WindowBuilder::new()
-                    .with_inner_size(LogicalSize::new(480, 96))
+                    .with_inner_size(LogicalSize::new(360, 64))
                     .with_always_on_top(true)
                     .with_title("Timer 255")
+                    .with_resizable(false)
                     // INFO: position only for development
                     .with_position(PhysicalPosition::new(2870, 60)),
             )
@@ -31,19 +34,15 @@ fn main() {
 }
 
 fn App(cx: Scope) -> Element {
-    let app_style = r"
-        width: 100vw;
-        height: 100vh;
-        background-color: #181818;
-        color: #c0c0c0;
-    ";
-
     use_shared_state_provider(cx, || TimerState::new());
     let timer_state = use_shared_state::<TimerState>(cx).unwrap();
 
     let is_counting = timer_state.read().is_counting;
     let count = timer_state.read().count;
+    let is_timer_open = timer_state.read().is_timer_open;
+    let is_controls_open = timer_state.read().is_controls_open;
     let is_settings_open = timer_state.read().is_settings_open;
+    let window = dioxus_desktop::use_window(cx);
 
     use_future(cx, &is_counting, move |_| {
         let timer_state = timer_state.clone();
@@ -58,29 +57,36 @@ fn App(cx: Scope) -> Element {
         }
     });
 
-    if is_settings_open {
+    if is_timer_open {
         cx.render(rsx! {
-            div {
-                style: app_style,
-                Flexbox {
-                    padding: "8px",
-                    height: "100%",
-                    justify_content: "space-between",
-                    Settings {}
+            ViewWrapper {
+                TimeLabel {
+                    count: count.clone()
                 },
-            }
+            },
+        })
+    } else if is_controls_open {
+        cx.render(rsx! {
+            ViewWrapper {
+                Controls {},
+            },
+        })
+    } else if is_settings_open {
+        cx.render(rsx! {
+            ViewWrapper{
+                Settings {}
+            },
         })
     } else {
         cx.render(rsx! {
-            div {
-                style: app_style,
-                Flexbox {
-                    padding: "8px",
-                    height: "100%",
-                    TimeLabel {
-                        count: count.clone()
+            ViewWrapper {
+                justify_content: "space-evenly",
+                "Something went wrong.",
+                Button {
+                    on_click: move |_event| {
+                        window.close();
                     },
-                    Controls {},
+                    ExitIcon {}
                 },
             }
         })

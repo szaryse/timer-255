@@ -1,6 +1,12 @@
 use dioxus::prelude::*;
 
-pub fn MinusIcon(cx: Scope) -> Element {
+#[derive(PartialEq, Props)]
+pub struct MinusIconProps<'a> {
+    #[props(default = "40")]
+    size: &'a str,
+}
+
+pub fn MinusIcon<'a>(cx: Scope<'a, MinusIconProps<'a>>) -> Element {
     let contents = r"
     M280-453h400v-60H280v60ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 
     111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 
@@ -11,8 +17,8 @@ pub fn MinusIcon(cx: Scope) -> Element {
     cx.render(rsx! {
         svg {
             xmlns: "http://www.w3.org/2000/svg",
-            height: "40",
-            width: "40",
+            height: cx.props.size,
+            width: cx.props.size,
             view_box: "0 -960 960 960",
             path {
                 d: "{contents}",

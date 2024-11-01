@@ -1,4 +1,6 @@
 pub mod cancel;
+pub mod chevron_left;
+pub mod chevron_right;
 pub mod close;
 pub mod exit;
 pub mod menu_icon;

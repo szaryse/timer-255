@@ -1,6 +1,12 @@
 use dioxus::prelude::*;
 
-pub fn PlusIcon(cx: Scope) -> Element {
+#[derive(PartialEq, Props)]
+pub struct PlusIconProps<'a> {
+    #[props(default = "40")]
+    size: &'a str,
+}
+
+pub fn PlusIcon<'a>(cx: Scope<'a, PlusIconProps<'a>>) -> Element {
     let contents = r"
     M453-280h60v-166h167v-60H513v-174h-60v174H280v60h173v166Zm27.266 
     200q-82.734 0-155.5-31.5t-127.266-86q-54.5-54.5-86-127.341Q80-397.681 
@@ -14,8 +20,8 @@ pub fn PlusIcon(cx: Scope) -> Element {
     cx.render(rsx! {
         svg {
             xmlns: "http://www.w3.org/2000/svg",
-            height: "40",
-            width: "40",
+            height: cx.props.size,
+            width: cx.props.size,
             view_box: "0 -960 960 960",
             path {
                 d: "{contents}",

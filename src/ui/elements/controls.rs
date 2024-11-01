@@ -1,8 +1,8 @@
 #![allow(non_snake_case)]
 use crate::ui::components::button::Button;
 use crate::ui::components::flexbox::Flexbox;
-use crate::ui::components::wrapper::Wrapper;
-use crate::ui::icons::menu_icon::MenuIcon;
+use crate::ui::icons::chevron_left::ChevronLeftIcon;
+use crate::ui::icons::chevron_right::ChevronRightIcon;
 use crate::ui::icons::next_icon::NextIcon;
 use crate::ui::icons::pause_icon::PauseIcon;
 use crate::ui::icons::play_icon::PlayIcon;
@@ -16,10 +16,20 @@ pub fn Controls<'a>(cx: Scope<'a>) -> Element {
     let timer_state = use_shared_state::<TimerState>(cx).unwrap();
 
     cx.render(rsx! {
-        Wrapper {
-            width: "280px",
+        Flexbox {
+            justify_content: "space-between",
             Flexbox {
-                justify_content: "space-between",
+                width: "40px",
+                Button {
+                    on_click: move |_event| {
+                        timer_state.write().reduce(TimerAction::GoBackToTimer);
+                    },
+                    ChevronLeftIcon {},
+                },
+            }
+            Flexbox {
+                padding: "0 8px",
+                justify_content: "space-evenly",
                 Button {
                     on_click: move |_event| {
                         timer_state.write().reduce(TimerAction::StartTime);
@@ -44,18 +54,16 @@ pub fn Controls<'a>(cx: Scope<'a>) -> Element {
                     },
                     NextIcon {},
                 },
-                Wrapper{
-                    width: "40px",
-                    margin: "0 0 0 16px",
-                    Button {
-                        on_click: move |_event| {
-                            timer_state.write().reduce(TimerAction::OpenSettings);
-                        },
-                        MenuIcon {},
+         },
+            Flexbox {
+                width: "40px",
+                Button {
+                    on_click: move |_event| {
+                        timer_state.write().reduce(TimerAction::GoToSettings);
                     },
-                }
+                    ChevronRightIcon {},
+                },
             }
         }
-
     })
 }

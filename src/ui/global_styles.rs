@@ -4,7 +4,7 @@ pub fn global_styles() -> &'static str {
             * {
                 margin: 0;
                 padding: 0;
-                box-sizing:border-box;
+                box-sizing: border-box;
             }
             html {
                 font-family: 'Consolas', sans-serif;

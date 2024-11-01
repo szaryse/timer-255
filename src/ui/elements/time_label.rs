@@ -1,8 +1,9 @@
 #![allow(non_snake_case)]
-use crate::contexts::state::TimerState;
+use crate::contexts::state::{TimerAction, TimerState};
+use crate::ui::components::button::Button;
 use crate::ui::components::flexbox::Flexbox;
 use crate::ui::components::label::Label;
-use crate::ui::components::wrapper::Wrapper;
+use crate::ui::icons::chevron_right::ChevronRightIcon;
 
 use dioxus::prelude::*;
 
@@ -34,21 +35,27 @@ pub fn TimeLabel(cx: Scope<TimeLabelProps>) -> Element {
     };
 
     cx.render(rsx! {
-            Wrapper {
-                width: "140px",
-                padding: "0 24px 0 0",
-                Flexbox{
-                    direction: "column",
-                    Label {
-                        font_size: "24px",
-                        text: "{current_text}"
+        Flexbox {
+            justify_content: "space-between",
+            Label {
+                font_size: "24px",
+                text: "{current_text}"
+            },
+            Label {
+                font_size: "48px",
+                text: "{time}",
+                color: "hsl({color}, 100%, 50%)",
+            },
+            Flexbox{
+                width: "40px",
+                flex_grow: 0,
+                Button {
+                    on_click: move |_event| {
+                        timer_state.write().reduce(TimerAction::GoToControls);
                     },
-                    Label {
-                        font_size: "48px",
-                        text: "{time}",
-                        color: "hsl({color}, 100%, 50%)",
-                    },
-                }
+                    ChevronRightIcon {},
+                },
             }
+        }
     })
 }

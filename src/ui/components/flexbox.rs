@@ -13,6 +13,8 @@ pub struct FlexboxProps<'a> {
     width: &'a str,
     #[props(default = "auto")]
     height: &'a str,
+    #[props(default = 1)]
+    flex_grow: i64,
     children: Element<'a>,
 }
 
@@ -23,10 +25,11 @@ pub fn Flexbox<'a>(cx: Scope<'a, FlexboxProps<'a>>) -> Element {
             flex_direction: cx.props.direction,
             justify_content: cx.props.justify_content,
             align_items: "center",
-            flex_grow: 1,
+            flex_grow: cx.props.flex_grow,
             width: cx.props.width,
             height: cx.props.height,
             padding: cx.props.padding,
+            // border: "1px solid red",
             &cx.props.children
         }
     })

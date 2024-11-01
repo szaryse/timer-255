@@ -1,7 +1,7 @@
 use crate::contexts::state::{Activity, TimerAction, TimerState};
 use crate::ui::components::{button::Button, flexbox::Flexbox, label::Label};
 use crate::ui::elements::time_setter::TimeSetter;
-use crate::ui::icons::close::CloseIcon;
+use crate::ui::icons::chevron_left::ChevronLeftIcon;
 use crate::ui::icons::exit::ExitIcon;
 use dioxus::prelude::*;
 
@@ -11,41 +11,52 @@ pub fn Settings<'a>(cx: Scope<'a>) -> Element {
 
     cx.render(rsx! {
         Flexbox {
-            direction: "column",
-            width: "172px",
-            Label {
-                font_size: "20px",
-                text: "Break Length"
-            },
-            TimeSetter {
-                activity_type: Activity::Break
-            }
-        },
-        Flexbox {
-            direction: "column",
-            width: "172px",
-            Label {
-                font_size: "20px",
-                text: "Session Length"
-            },
-            TimeSetter {
-                activity_type: Activity::Session
-            }
-        }
-        Flexbox {
-            width: "120px",
-            justify_content: "space-evenly",
-            Button {
-                on_click: move |_event| {
-                    window.close();
+            width: "100%",
+            justify_content: "space-between",
+            Flexbox {
+                width: "40px",
+                Button {
+                    on_click: move |_event| {
+                        timer_state.write().reduce(TimerAction::GoBackToControls);
+                    },
+                    ChevronLeftIcon {},
                 },
-                ExitIcon {}
             },
-            Button {
-                on_click: move |_event| {
-                    timer_state.write().reduce(TimerAction::CloseSettings);
+            Flexbox {
+                direction: "column",
+                justify_content: "space-between",
+                Flexbox {
+                    height: "26px",
+                    justify_content: "space-between",
+                    Label {
+                        font_size: "20px",
+                        text: "Session Length"
+                    },
+                    TimeSetter {
+                        activity_type: Activity::Session
+                    }
                 },
-                CloseIcon {},
+                Flexbox {
+                    height: "26px",
+                    justify_content: "space-between",
+                    Label {
+                        font_size: "20px",
+                        text: "Break Length"
+                    },
+                    TimeSetter {
+                        activity_type: Activity::Break
+                    }
+                },
+
+            },
+            Flexbox {
+                width: "40px",
+                Button {
+                    on_click: move |_event| {
+                        window.close();
+                    },
+                    ExitIcon {}
+                },
             }
         }
     })

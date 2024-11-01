@@ -24,7 +24,8 @@ pub fn TimeSetter(cx: Scope<TimeSetterProps>) -> Element {
 
     cx.render(rsx! {
         Flexbox{
-            padding: "8px",
+            width: "96px",
+            flex_grow: 0,
             Button {
                 on_click: move |_event| {
                     match cx.props.activity_type {
@@ -32,12 +33,16 @@ pub fn TimeSetter(cx: Scope<TimeSetterProps>) -> Element {
                         Activity::Session => timer_state.write().reduce(TimerAction::DecreaseSessionTime)
                     }
                 },
-                MinusIcon {}
+                Flexbox {
+                    MinusIcon {
+                        size: "24"
+                    }
+                }
             },
             Wrapper {
-                width: "40px",
+                width: "36px",
                 Label {
-                    font_size: "24px",
+                    font_size: "20px",
                     text: "{value}",
                 },
             },
@@ -48,7 +53,11 @@ pub fn TimeSetter(cx: Scope<TimeSetterProps>) -> Element {
                         Activity::Session => timer_state.write().reduce(TimerAction::IncreaseSessionTime)
                     }
                 },
-                PlusIcon {}
+                Flexbox {
+                    PlusIcon {
+                        size: "24"
+                    }
+                }   
             }
         }
     })

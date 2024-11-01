@@ -28,8 +28,10 @@ pub enum TimerAction {
     PauseTime,
     ResetTime,
     NextActivity,
-    OpenSettings,
-    CloseSettings,
+    GoToControls,
+    GoBackToTimer,
+    GoToSettings,
+    GoBackToControls,
 }
 
 #[derive(PartialEq, Clone)]
@@ -39,6 +41,8 @@ pub struct TimerState {
     pub is_counting: bool,
     pub is_pausing: bool,
     /* config */
+    pub is_timer_open: bool,
+    pub is_controls_open: bool,
     pub is_settings_open: bool,
     pub break_time: ActivityTime,
     pub session_time: ActivityTime,
@@ -52,6 +56,8 @@ impl TimerState {
             is_counting: false,
             is_pausing: false,
             /* config */
+            is_timer_open: true,
+            is_controls_open: false,
             is_settings_open: false,
             break_time: ActivityTime {
                 activity_name: "Break".to_string(),
@@ -146,11 +152,21 @@ impl TimerState {
                     self.count = self.session_time.set_time * 60;
                 }
             },
-            TimerAction::OpenSettings => {
+            TimerAction::GoToControls => {
+                self.is_controls_open = true;
+                self.is_timer_open = false;
+            }
+            TimerAction::GoBackToTimer => {
+                self.is_controls_open = false;
+                self.is_timer_open = true;
+            }
+            TimerAction::GoToSettings => {
+                self.is_controls_open = false;
                 self.is_settings_open = true;
             }
-            TimerAction::CloseSettings => {
+            TimerAction::GoBackToControls => {
                 self.is_settings_open = false;
+                self.is_controls_open = true;
             }
         }
     }
