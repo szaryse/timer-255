@@ -1,14 +1,23 @@
 use dioxus::prelude::*;
 use dioxus::desktop::use_window;
-
-use crate::contexts::state::{Activity, TimerAction, TimerState};
+use crate::{Activity, ActivityTime};
 use crate::ui::components::{button::Button, flexbox::Flexbox, text::Text};
 use crate::ui::elements::time_setter::TimeSetter;
 use crate::ui::icons::chevron_left::ChevronLeftIcon;
 use crate::ui::icons::exit::ExitIcon;
 
-pub fn Settings() -> Element {
-    // let timer_state = use_shared_state::<TimerState>(cx).unwrap();
+#[derive(PartialEq, Props, Clone)]
+pub struct SettingsProps {
+    is_controls_open: Signal<bool>,
+    is_settings_open: Signal<bool>,
+    activity_type: Signal<Activity>,
+    break_time: Signal<ActivityTime>,
+    session_time: Signal<ActivityTime>,
+    is_counting: bool,
+    count: Signal<u32>,
+}
+
+pub fn Settings(mut props: SettingsProps) -> Element {
     let window = use_window();
 
     rsx! {
@@ -19,7 +28,8 @@ pub fn Settings() -> Element {
                 width: "40px",
                 Button {
                     on_click: move |_event| {
-                        // timer_state.write().reduce(TimerAction::GoBackToControls);
+                        props.is_settings_open.set(false);
+                        props.is_controls_open.set(true);
                     },
                     ChevronLeftIcon {},
                 },
@@ -35,7 +45,12 @@ pub fn Settings() -> Element {
                         text: "Session Length"
                     },
                     TimeSetter {
-                        activity_type: Activity::Session
+                        activity_type_label: Activity::Session,
+                        activity_type: props.activity_type,
+                        break_time: props.break_time,
+                        session_time: props.session_time,
+                        is_counting: props.is_counting,
+                        count: props.count,
                     }
                 },
                 Flexbox {
@@ -46,7 +61,12 @@ pub fn Settings() -> Element {
                         text: "Break Length"
                     },
                     TimeSetter {
-                        activity_type: Activity::Break
+                        activity_type_label: Activity::Break,
+                        activity_type: props.activity_type,
+                        break_time: props.break_time,
+                        session_time: props.session_time,
+                        is_counting: props.is_counting,
+                        count: props.count,
                     }
                 },
 
