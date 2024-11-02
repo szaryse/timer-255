@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 use dioxus::desktop::use_window;
-use crate::{Activity, ActivityTime};
+use crate::app::{Activity, ActivityTime};
 use crate::ui::components::{button::Button, flexbox::Flexbox, text::Text};
 use crate::ui::elements::time_setter::TimeSetter;
 use crate::ui::icons::chevron_left::ChevronLeftIcon;

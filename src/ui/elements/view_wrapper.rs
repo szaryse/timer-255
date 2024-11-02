@@ -11,16 +11,14 @@ pub struct ViewWrapperProps {
 }
 
 pub fn ViewWrapper(props: ViewWrapperProps) -> Element {
-    let app_style = r"
-        width: 100vw;
-        height: 100vh;
-        background-color: #181818;
-        color: #c0c0c0;
-    ";
-
     rsx! {
         div {
-            style: app_style,
+            width: "calc(100% - 8px)",
+            height: "calc(100vh - 8px)",
+            background_color: "rgba(0,0,0,0.8)",
+            margin: "4px",
+            width: "calc(100% - 8px)",
+            padding: "4px",
             Flexbox {
                 padding: "8px",
                 height: "100%",

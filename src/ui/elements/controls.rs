@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
-use crate::{Activity, ActivityTime};
+use crate::app::{Activity, ActivityTime};
 use crate::ui::components::button::Button;
 use crate::ui::components::flexbox::Flexbox;
 use crate::ui::icons::chevron_left::ChevronLeftIcon;
