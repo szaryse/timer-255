@@ -15,7 +15,6 @@ pub mod app;
 fn main() {
     let window = WindowBuilder::new()
         .with_transparent(true)
-        // todo start with height 0 and change to 56px
         .with_inner_size(LogicalSize::new(320, 0))
         // INFO: set to false in the release build
         .with_always_on_top(true)

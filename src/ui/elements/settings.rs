@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+
 use dioxus::prelude::*;
 use dioxus::desktop::use_window;
 use crate::app::{Activity, ActivityTime};
@@ -13,6 +15,7 @@ pub struct SettingsProps {
     activity_type: Signal<Activity>,
     break_time: Signal<ActivityTime>,
     session_time: Signal<ActivityTime>,
+    starting_time: Signal<ActivityTime>,
     is_counting: bool,
     count: Signal<u32>,
 }
@@ -23,10 +26,12 @@ pub fn Settings(mut props: SettingsProps) -> Element {
     rsx! {
         Flexbox {
             width: "100%",
+            height: "40px",
             justify_content: "space-between",
             Flexbox {
                 width: "40px",
                 Button {
+                    width: "40px",
                     on_click: move |_event| {
                         props.is_settings_open.set(false);
                         props.is_controls_open.set(true);
@@ -38,10 +43,11 @@ pub fn Settings(mut props: SettingsProps) -> Element {
                 direction: "column",
                 justify_content: "space-between",
                 Flexbox {
-                    height: "26px",
+                    height: "20px",
                     justify_content: "space-between",
                     Text {
-                        font_size: "20px",
+                        font_size: "18px",
+                        line_height: "20px",
                         text: "Session Length"
                     },
                     TimeSetter {
@@ -51,13 +57,15 @@ pub fn Settings(mut props: SettingsProps) -> Element {
                         session_time: props.session_time,
                         is_counting: props.is_counting,
                         count: props.count,
+                        starting_time: props.starting_time,
                     }
                 },
                 Flexbox {
-                    height: "26px",
+                    height: "20px",
                     justify_content: "space-between",
                     Text {
-                        font_size: "20px",
+                        font_size: "18px",
+                        line_height: "20px",
                         text: "Break Length"
                     },
                     TimeSetter {
@@ -67,6 +75,7 @@ pub fn Settings(mut props: SettingsProps) -> Element {
                         session_time: props.session_time,
                         is_counting: props.is_counting,
                         count: props.count,
+                        starting_time: props.starting_time,
                     }
                 },
 
@@ -74,6 +83,7 @@ pub fn Settings(mut props: SettingsProps) -> Element {
             Flexbox {
                 width: "40px",
                 Button {
+                    width: "40px",
                     on_click: move |_event| {
                         window.close();
                     },

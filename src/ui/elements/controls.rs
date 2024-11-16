@@ -21,6 +21,7 @@ pub struct ControlsProps {
     count: Signal<u32>,
     break_time: Signal<ActivityTime>,
     session_time: Signal<ActivityTime>,
+    starting_time: Signal<ActivityTime>,
 }
 
 
@@ -28,13 +29,16 @@ pub fn Controls(mut props: ControlsProps) -> Element {
     let activity_type = props.activity_type;
     let break_time = props.break_time;
     let session_time = props.session_time;
+    let starting_time = props.starting_time;
 
     rsx! {
         Flexbox {
             justify_content: "space-between",
+            height: "40px",
             Flexbox {
                 width: "40px",
                 Button {
+                    height: "40px",
                     on_click: move |_event| {
                         props.is_controls_open.set(false);
                         props.is_timer_open.set(true);
@@ -46,6 +50,7 @@ pub fn Controls(mut props: ControlsProps) -> Element {
                 padding: "0 8px",
                 justify_content: "space-evenly",
                 Button {
+                    height: "40px",
                     on_click: move |_event| {
                         let is_counting = props.is_counting;
 
@@ -56,33 +61,43 @@ pub fn Controls(mut props: ControlsProps) -> Element {
                     PlayIcon {},
                 },
                 Button {
+                    height: "40px",
                     on_click: move |_event| {
                         props.is_counting.set(false);
                     },
                     PauseIcon {}
                 },
                 Button {
+                    height: "40px",
                     on_click: move |_event| {
                         props.is_counting.set(false);
-
-                        if activity_type() == Activity::Session {
-                            props.count.set(session_time().set_time * 60);
-                        }
-                        if activity_type() == Activity::Break {
-                            props.count.set(break_time().set_time * 60);
+                        match activity_type() {
+                            Activity::Session => {
+                                props.count.set(session_time().set_time * 60);
+                            }
+                            Activity::Break => {
+                                props.count.set(break_time().set_time * 60);
+                            }
+                            Activity::StartingIn => {
+                                props.count.set(starting_time().set_time * 60);
+                            }
                         }
                     },
                     ResetIcon {},
                 },
                 Button {
+                    height: "40px",
                     on_click: move |_event| {
-
                         match activity_type() {
                             Activity::Session => {
                                 props.activity_type.set(Activity::Break);
                                 props.count.set(break_time().set_time * 60);
                             }
                             Activity::Break => {
+                                props.activity_type.set(Activity::StartingIn);
+                                props.count.set(starting_time().set_time * 60);
+                            }
+                            Activity::StartingIn => {
                                 props.activity_type.set(Activity::Session);
                                 props.count.set(session_time().set_time * 60);
                             }
@@ -95,6 +110,7 @@ pub fn Controls(mut props: ControlsProps) -> Element {
             Flexbox {
                 width: "40px",
                 Button {
+                    height: "40px",
                     on_click: move |_event| {
                         props.is_controls_open.set(false);
                         props.is_settings_open.set(true);

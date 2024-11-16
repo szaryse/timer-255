@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+
 use dioxus::prelude::*;
 use dioxus::desktop::{LogicalSize, use_window};
 use std::time::Duration;
@@ -11,6 +13,7 @@ use crate::ui::global_styles::global_styles;
 pub enum Activity {
     Break,
     Session,
+    StartingIn,
 }
 
 #[derive(PartialEq, Clone)]
@@ -28,16 +31,16 @@ pub struct Timer {
     pub is_pausing: bool,
 }
 
-#[allow(non_snake_case)]
 pub fn App() -> Element {
     let window = use_window();
 
-    let mut activity_type = use_signal(|| Activity::Session);
-    let mut count = use_signal(|| 25 * 60);
+    let mut activity_type = use_signal(|| Activity::StartingIn);
+    let mut count = use_signal(|| 5 * 60u32);
     let mut is_counting = use_signal(|| false);
     let mut is_timer_open = use_signal(|| true);
     let mut is_controls_open = use_signal(|| false);
     let mut is_settings_open = use_signal(|| false);
+    let mut session_number = use_signal(|| 6u32);
     let mut break_time = use_signal(|| ActivityTime {
         activity_name: "Break".to_string(),
         set_time: 5,
@@ -47,6 +50,11 @@ pub fn App() -> Element {
         activity_name: "Session".to_string(),
         set_time: 25,
         activity_type: Activity::Session,
+    });
+    let mut starting_time = use_signal(|| ActivityTime {
+        activity_name: "Starting in".to_string(),
+        set_time: 5,
+        activity_type: Activity::StartingIn,
     });
 
     use_effect(move || window.set_inner_size(LogicalSize::new(340, 56)));
@@ -61,11 +69,16 @@ pub fn App() -> Element {
                         match activity_type() {
                             Activity::Break => {
                                 activity_type.set(Activity::Session);
+                                session_number -= 1;
                                 count.set(session_time().set_time * 60 - 1);
                             }
                             Activity::Session => {
                                 activity_type.set(Activity::Break);
                                 count.set(break_time().set_time * 60 - 1);
+                            }
+                            Activity::StartingIn => {
+                                activity_type.set(Activity::Session);
+                                count.set(session_time().set_time * 60 - 1);
                             }
                         }
                     } else {
@@ -84,6 +97,8 @@ pub fn App() -> Element {
                     activity_type: activity_type(),
                     break_time: break_time(),
                     session_time: session_time(),
+                    starting_time: starting_time(),
+                    session_number: session_number(),
                     is_timer_open: is_timer_open,
                     is_controls_open: is_controls_open,
                 },
@@ -101,6 +116,7 @@ pub fn App() -> Element {
                     break_time: break_time,
                     session_time: session_time,
                     is_settings_open: is_settings_open,
+                    starting_time: starting_time,
                 },
             },
         }
@@ -112,6 +128,7 @@ pub fn App() -> Element {
                     is_controls_open:is_controls_open,
                     break_time: break_time,
                     session_time: session_time,
+                    starting_time: starting_time,
                     is_counting: is_counting(),
                     count: count,
                     activity_type: activity_type,

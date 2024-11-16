@@ -13,14 +13,17 @@ pub struct TimeLabelProps {
     activity_type: Activity,
     break_time: ActivityTime,
     session_time: ActivityTime,
+    starting_time: ActivityTime,
     is_timer_open: Signal<bool>,
     is_controls_open: Signal<bool>,
+    session_number: u32,
 }
 
 pub fn TimerView(mut props: TimeLabelProps) -> Element {
     let current_text = match props.activity_type {
         Activity::Break => props.break_time.activity_name,
-        Activity::Session => props.session_time.activity_name,
+        Activity::Session => format!("{} {}", props.session_time.activity_name, props.session_number),
+        Activity::StartingIn => props.starting_time.activity_name,
     };
 
     let minutes = props.count / 60;
@@ -36,12 +39,14 @@ pub fn TimerView(mut props: TimeLabelProps) -> Element {
     rsx! {
         Flexbox {
             justify_content: "space-between",
+            height: "40px",
+            padding: "0 0 0 16px",
             Text {
                 font_size: "24px",
                 text: "{current_text}"
             },
             Text {
-                font_size: "48px",
+                font_size: "24px",
                 text: "{time}",
                 color: "hsl({color}, 100%, 50%)",
             },
@@ -49,6 +54,7 @@ pub fn TimerView(mut props: TimeLabelProps) -> Element {
                 width: "40px",
                 flex_grow: 0,
                 Button {
+                    height: "40px",
                     on_click: move |_event| {
                         props.is_controls_open.set(true);
                         props.is_timer_open.set(false);
