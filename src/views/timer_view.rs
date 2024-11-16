@@ -15,15 +15,27 @@ pub struct TimeLabelProps {
     session_time: ActivityTime,
     starting_time: ActivityTime,
     selected_view: Signal<Views>,
-    session_number: u32,
+    session_number: i32,
 }
 
 pub fn TimerView(mut props: TimeLabelProps) -> Element {
     let current_text = match props.activity_type {
         Activity::Break => props.break_time.activity_name,
-        Activity::Session => format!("{} {}", props.session_time.activity_name, props.session_number),
+        Activity::Session => {
+            if props.session_number > 1 {
+                format!("{} {}", props.session_time.activity_name, props.session_number)
+            } else if props.session_number == 1 {
+                format!("Last {}", props.session_time.activity_name)
+            } else {
+                "TIMEOUT!".to_string()
+            }
+        }
         Activity::StartingIn => props.starting_time.activity_name,
     };
+    let mut current_text_color = "#adadb8";
+    if props.session_number <= 0 {
+        current_text_color = "hsl(0, 100%, 50%)";
+    }
 
     let minutes = props.count / 60;
     let seconds = props.count - minutes * 60;
@@ -40,9 +52,14 @@ pub fn TimerView(mut props: TimeLabelProps) -> Element {
             justify_content: "space-between",
             height: "40px",
             padding: "0 0 0 16px",
-            Text {
-                font_size: "24px",
-                text: "{current_text}"
+            div {
+                width: "160px", // TODO change when streaming time will be added
+                Text {
+                    font_size: "24px",
+                    text: "{current_text}",
+                    color: "{current_text_color}",
+                    text_align: "left",
+                },
             },
             Text {
                 font_size: "24px",

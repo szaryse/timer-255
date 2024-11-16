@@ -44,8 +44,8 @@ pub fn App() -> Element {
     let mut activity_type = use_signal(|| Activity::StartingIn);
     let mut count = use_signal(|| 5 * 60u32);
     let mut is_counting = use_signal(|| false);
-    let mut selected_view = use_signal(|| Views::Session);
-    let mut session_number = use_signal(|| 6u32);
+    let mut selected_view = use_signal(|| Views::Timer);
+    let mut session_number = use_signal(|| 6i32);
     let mut break_time = use_signal(|| ActivityTime {
         activity_name: "Break".to_string(),
         set_time: 5,
@@ -130,12 +130,11 @@ pub fn App() -> Element {
                 ViewWrapper {
                     SessionView {
                         selected_view: selected_view,
-                        // activity_type: Signal<Activity>,
-                        // count: count,
-                        // is_counting: is_counting,
-                        // break_time: break_time,
-                        // session_time: session_time,
-                        // starting_time: starting_time,
+                        session_number: session_number,
+                        starting_time: starting_time,
+                        activity_type: activity_type,
+                        count: count,
+                        is_counting: is_counting(),
                     }
                 }
             }
