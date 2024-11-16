@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
-use crate::app::{Activity, ActivityTime};
+use crate::app::{Activity, ActivityTime, Views};
 use crate::ui::components::button::Button;
 use crate::ui::components::flexbox::Flexbox;
 use crate::ui::icons::chevron_left::ChevronLeftIcon;
@@ -12,20 +12,18 @@ use crate::ui::icons::play_icon::PlayIcon;
 use crate::ui::icons::reset_icon::ResetIcon;
 
 #[derive(PartialEq, Props, Clone)]
-pub struct ControlsProps {
-    is_timer_open: Signal<bool>,
-    is_controls_open: Signal<bool>,
+pub struct ControlsViewProps {
     is_counting: Signal<bool>,
-    is_settings_open: Signal<bool>,
     activity_type: Signal<Activity>,
     count: Signal<u32>,
     break_time: Signal<ActivityTime>,
+    selected_view: Signal<Views>,
     session_time: Signal<ActivityTime>,
     starting_time: Signal<ActivityTime>,
 }
 
 
-pub fn Controls(mut props: ControlsProps) -> Element {
+pub fn ControlsView(mut props: ControlsViewProps) -> Element {
     let activity_type = props.activity_type;
     let break_time = props.break_time;
     let session_time = props.session_time;
@@ -40,8 +38,7 @@ pub fn Controls(mut props: ControlsProps) -> Element {
                 Button {
                     height: "40px",
                     on_click: move |_event| {
-                        props.is_controls_open.set(false);
-                        props.is_timer_open.set(true);
+                        props.selected_view.set(Views::Timer);
                     },
                     ChevronLeftIcon {},
                 },
@@ -112,8 +109,7 @@ pub fn Controls(mut props: ControlsProps) -> Element {
                 Button {
                     height: "40px",
                     on_click: move |_event| {
-                        props.is_controls_open.set(false);
-                        props.is_settings_open.set(true);
+                        props.selected_view.set(Views::Session);
                     },
                     ChevronRightIcon {},
                 },

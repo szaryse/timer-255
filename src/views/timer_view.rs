@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
-use crate::app::{Activity, ActivityTime};
+use crate::app::{Activity, ActivityTime, Views};
 use crate::ui::components::button::Button;
 use crate::ui::components::flexbox::Flexbox;
 use crate::ui::components::text::Text;
@@ -14,8 +14,7 @@ pub struct TimeLabelProps {
     break_time: ActivityTime,
     session_time: ActivityTime,
     starting_time: ActivityTime,
-    is_timer_open: Signal<bool>,
-    is_controls_open: Signal<bool>,
+    selected_view: Signal<Views>,
     session_number: u32,
 }
 
@@ -56,8 +55,7 @@ pub fn TimerView(mut props: TimeLabelProps) -> Element {
                 Button {
                     height: "40px",
                     on_click: move |_event| {
-                        props.is_controls_open.set(true);
-                        props.is_timer_open.set(false);
+                        props.selected_view.set(Views::Controls);
                     },
                     ChevronRightIcon {},
                 },

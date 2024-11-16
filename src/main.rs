@@ -10,6 +10,7 @@ use crate::app::App;
 use crate::ui::global_styles::global_styles;
 
 pub mod ui;
+pub mod views;
 pub mod app;
 
 fn main() {

@@ -1,12 +1,11 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
-use dioxus::desktop::{LogicalSize, use_window};
+use dioxus::desktop::{use_window, LogicalSize};
 use std::time::Duration;
-use crate::{
-    ui::{components::button::Button, elements::view_wrapper::ViewWrapper, icons::exit::ExitIcon},
-};
-use crate::ui::elements::{controls::Controls, settings::Settings, timer_view::TimerView};
+use crate::ui::{components::button::Button, icons::exit::ExitIcon};
+use crate::ui::components::view_wrapper::ViewWrapper;
+use crate::views::{controls_view::ControlsView, session_view::SessionView, settings_view::SettingsView, timer_view::TimerView};
 use crate::ui::global_styles::global_styles;
 
 #[derive(PartialEq, Clone, Copy)]
@@ -31,15 +30,21 @@ pub struct Timer {
     pub is_pausing: bool,
 }
 
+#[derive(PartialEq, Clone, Copy)]
+pub enum Views {
+    Timer,
+    Controls,
+    Session,
+    Settings,
+}
+
 pub fn App() -> Element {
     let window = use_window();
 
     let mut activity_type = use_signal(|| Activity::StartingIn);
     let mut count = use_signal(|| 5 * 60u32);
     let mut is_counting = use_signal(|| false);
-    let mut is_timer_open = use_signal(|| true);
-    let mut is_controls_open = use_signal(|| false);
-    let mut is_settings_open = use_signal(|| false);
+    let mut selected_view = use_signal(|| Views::Session);
     let mut session_number = use_signal(|| 6u32);
     let mut break_time = use_signal(|| ActivityTime {
         activity_name: "Break".to_string(),
@@ -89,53 +94,66 @@ pub fn App() -> Element {
         }
     );
 
-    if is_timer_open() {
-        rsx! {
-            ViewWrapper {
-                TimerView {
-                    count: count(),
-                    activity_type: activity_type(),
-                    break_time: break_time(),
-                    session_time: session_time(),
-                    starting_time: starting_time(),
-                    session_number: session_number(),
-                    is_timer_open: is_timer_open,
-                    is_controls_open: is_controls_open,
-                },
-            },
+    match selected_view() {
+        Views::Timer => {
+            rsx! {
+                ViewWrapper {
+                    TimerView {
+                        count: count(),
+                        activity_type: activity_type(),
+                        break_time: break_time(),
+                        session_time: session_time(),
+                        starting_time: starting_time(),
+                        session_number: session_number(),
+                        selected_view: selected_view,
+                    },
+                }
+            }
         }
-    } else if is_controls_open() {
-        rsx! {
+        Views::Controls => {
+            rsx! {
             ViewWrapper {
-                Controls {
-                    is_timer_open: is_timer_open,
-                    is_controls_open:is_controls_open,
+                ControlsView {
                     is_counting: is_counting,
                     activity_type: activity_type,
                     count: count,
                     break_time: break_time,
                     session_time: session_time,
-                    is_settings_open: is_settings_open,
                     starting_time: starting_time,
+                    selected_view: selected_view,
                 },
             },
         }
-    } else if is_settings_open() {
-        rsx! {
-            ViewWrapper{
-                Settings {
-                    is_settings_open: is_settings_open,
-                    is_controls_open:is_controls_open,
-                    break_time: break_time,
-                    session_time: session_time,
-                    starting_time: starting_time,
-                    is_counting: is_counting(),
-                    count: count,
-                    activity_type: activity_type,
-                }
-            },
         }
-    } else {
-        return rsx!();
+        Views::Session => {
+            rsx! {
+                ViewWrapper {
+                    SessionView {
+                        selected_view: selected_view,
+                        // activity_type: Signal<Activity>,
+                        // count: count,
+                        // is_counting: is_counting,
+                        // break_time: break_time,
+                        // session_time: session_time,
+                        // starting_time: starting_time,
+                    }
+                }
+            }
+        }
+        Views::Settings => {
+            rsx! {
+                ViewWrapper {
+                    SettingsView {
+                        break_time: break_time,
+                        session_time: session_time,
+                        starting_time: starting_time,
+                        is_counting: is_counting(),
+                        count: count,
+                        activity_type: activity_type,
+                        selected_view: selected_view,
+                    }
+                },
+            }
+        }
     }
 }

@@ -2,25 +2,24 @@
 
 use dioxus::prelude::*;
 use dioxus::desktop::use_window;
-use crate::app::{Activity, ActivityTime};
+use crate::app::{Activity, ActivityTime, Views};
 use crate::ui::components::{button::Button, flexbox::Flexbox, text::Text};
 use crate::ui::elements::time_setter::TimeSetter;
 use crate::ui::icons::chevron_left::ChevronLeftIcon;
 use crate::ui::icons::exit::ExitIcon;
 
 #[derive(PartialEq, Props, Clone)]
-pub struct SettingsProps {
-    is_controls_open: Signal<bool>,
-    is_settings_open: Signal<bool>,
+pub struct SettingsViewProps {
     activity_type: Signal<Activity>,
     break_time: Signal<ActivityTime>,
+    selected_view: Signal<Views>,
     session_time: Signal<ActivityTime>,
     starting_time: Signal<ActivityTime>,
     is_counting: bool,
     count: Signal<u32>,
 }
 
-pub fn Settings(mut props: SettingsProps) -> Element {
+pub fn SettingsView(mut props: SettingsViewProps) -> Element {
     let window = use_window();
 
     rsx! {
@@ -33,8 +32,7 @@ pub fn Settings(mut props: SettingsProps) -> Element {
                 Button {
                     width: "40px",
                     on_click: move |_event| {
-                        props.is_settings_open.set(false);
-                        props.is_controls_open.set(true);
+                        props.selected_view.set(Views::Session);
                     },
                     ChevronLeftIcon {},
                 },
